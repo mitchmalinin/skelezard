@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+        max-height: 100%;
+      }
+    </style>
+    <meta charset="utf-8" />
+    <script>
+      let imgSrc = "./skull.png"
+
+      let typedWord = []
+      let startGlitch = false
+      const glitch = [71, 76, 73, 84, 67, 72]
+
+      const toHex = (n) => {
+        const hex = n.toString(16)
+        return hex.length == 1 ? "0" + hex : hex
+      }
+
+      // glitch the hex array by shifting sections up or down by a random amount
+      const glitchHorizontal = () => {
+        const numSections = 10
+        const sectionSize = Math.floor(hexArray.length / numSections)
+        const maxShift = sectionSize * 2
+        for (let i = 0; i < numSections; i++) {
+          const sectionStart = i * sectionSize
+          const sectionEnd = sectionStart + sectionSize
+          const shift = Math.floor(Math.random() * maxShift * 2) - maxShift
+          hexArray.copyWithin(
+            sectionStart,
+            sectionStart + shift,
+            sectionEnd + shift
+          )
+        }
+      }
+
+      const glitchVertical = () => {
+        const numRows = 10
+        const rowSize = canvas.width
+        const maxShift = rowSize * 2
+        for (let i = 0; i < numRows; i++) {
+          const rowStart = i * rowSize
+          const rowEnd = rowStart + rowSize
+          const shift = Math.floor(Math.random() * maxShift * 2) - maxShift
+          hexArray.copyWithin(rowStart, rowStart + shift, rowEnd + shift)
+        }
+      }
+
+      window.onload = () => {
+        const img = document.getElementById("glitch")
+        img.src = imgSrc
+        // create a canvas element to draw the glitched image
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+
+        console.log("img", img.width)
+
+        // set the canvas size to match the image size
+        canvas.width = img.width || 10
+        canvas.height = img.heigh || 10
+
+        // draw the original image onto the canvas
+        ctx.drawImage(img, 0, 0)
+
+        // get the image data from the canvas
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const data = imageData.data
+
+        // convert the image data to an array of hexadecimal color values
+        const hexArray = []
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i]
+          const g = data[i + 1]
+          const b = data[i + 2]
+          const newR = (r + Math.floor(Math.random() * 20)) % 256
+          const newG = (g + Math.floor(Math.random() * 20)) % 256
+          const newB = (b + Math.floor(Math.random() * 20)) % 256
+          const hex = `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`
+          hexArray.push(hex)
+        }
+
+        // create a new canvas element to display the glitched image
+        const glitchCanvas = document.createElement("canvas")
+        const glitchCtx = glitchCanvas.getContext("2d")
+
+        // set the canvas size to match the image size
+        glitchCanvas.width = canvas.width
+        glitchCanvas.height = canvas.height
+
+        // draw rectangles with each hex color on the new canvas element
+        for (let y = 0; y < canvas.height; y++) {
+          for (let x = 0; x < canvas.width; x++) {
+            const index = y * canvas.width + x
+            glitchCtx.fillStyle = hexArray[index]
+            glitchCtx.fillRect(x, y, 1, 1)
+          }
+        }
+
+        // add CSS styling to set the width of the new canvas element
+        glitchCanvas.style.width = "80%"
+
+        // append the new canvas element to the body of the HTML document
+        document.body.appendChild(glitchCanvas)
+
+        document.body.onkeyup = function (e) {
+          console.log("running")
+
+          if ((e.keycode = 32)) {
+            if (startGlitch) {
+            }
+          } else {
+            typedWord.push(e.keyCode)
+            if (typedWord.length >= 6) {
+              const sliced = typedWord.slice(-6)
+              if (JSON.stringify(sliced) == JSON.stringify(glitch)) {
+                startGlitch = true
+                liarImage.src =
+                  base + images[Math.floor(Math.random() * images.length)]
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <img id="glitch" />
+  </body>
+</html>
