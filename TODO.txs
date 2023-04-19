@@ -1,0 +1,8 @@
+TODO:
+
+[X] Fix image center issue
+[] Create one function that calls all three functions with random inputs
+[] Create secret hash function that opens the art panel
+[] Save image to ipfs
+
+
