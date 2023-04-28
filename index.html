@@ -37,14 +37,7 @@
   </head>
   <body>
     <div id="app">
-      <img id="source-image" src="./skull.jpeg" alt="Original Image" />
-      <div id="button-container">
-        <button id="glitch-effect-1">Glitch Effect 1</button>
-        <button id="glitch-effect-2">Glitch Effect 2</button>
-        <button id="glitch-effect-3">Glitch Effect 3</button>
-        <button id="glitch-all">ALL Glitch</button>
-        <button id="reset">Reset</button>
-      </div>
+      <img id="source-image" src="./skull.jpg" alt="Original Image" />
     </div>
     <script>
       const GLITCH_MAP = {
@@ -171,26 +164,21 @@
         }
       }
 
-      const createGlitchButtonListener = (glitchEffect) => () => {
+      const createGlitchImage = (glitchEffect) => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const glitchedData = glitchEffect(imageData)
         ctx.putImageData(glitchedData, 0, 0)
       }
 
-      const debounce = (fn, delay) => {
-        let timeout
-        return (...args) => {
-          clearTimeout(timeout)
-          timeout = setTimeout(() => {
-            fn(...args)
-          }, delay)
-        }
-      }
-
       const handleKeyPress = (event) => {
+        if (event.code === "Space" && activateGlitchMode) {
+          createGlitchImage(applyAllGlitchEffects)
+        }
+
         if (event.code === "Escape" && activateGlitchMode) {
           activateGlitchModeWordArray.length = 0
           activateGlitchMode = false
+          reset()
         }
         if (
           (event.code === "Backspace" || event.code === "Delete") &&
@@ -226,14 +214,7 @@
         } else {
           if (activateGlitchModeWordArray.join("") === activateGlitchModeWord) {
             if (!activateGlitchMode) {
-              const imageData = ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-              )
-              const glitchedData = applyAllGlitchEffects(imageData)
-              ctx.putImageData(glitchedData, 0, 0)
+              createGlitchImage(applyAllGlitchEffects)
             }
             activateGlitchMode = true
           } else {
@@ -247,25 +228,7 @@
         ctx.drawImage(sourceImage, 0, 0)
       }
 
-      document
-        .getElementById("glitch-effect-1")
-        .addEventListener("click", createGlitchButtonListener(glitchEffect1))
-      document
-        .getElementById("glitch-effect-2")
-        .addEventListener("click", createGlitchButtonListener(glitchEffect2))
-      document
-        .getElementById("glitch-effect-3")
-        .addEventListener("click", createGlitchButtonListener(glitchEffect3))
-      document
-        .getElementById("glitch-all")
-        .addEventListener(
-          "click",
-          debounce(createGlitchButtonListener(applyAllGlitchEffects), 400)
-        )
-
       document.addEventListener("keydown", handleKeyPress)
-
-      document.getElementById("reset").addEventListener("click", reset)
 
       sourceImage.addEventListener("load", () => {
         canvas.width = 1024
