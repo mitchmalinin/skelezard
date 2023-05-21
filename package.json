@@ -1,0 +1,22 @@
+{
+  "name": "img_glitcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitchmalinin/skelezard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mitchmalinin/skelezard/issues"
+  },
+  "homepage": "https://github.com/mitchmalinin/skelezard#readme",
+  "dependencies": {
+    "ipfs-http-client": "^60.0.0"
+  }
+}

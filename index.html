@@ -1,4 +1,41 @@
 <!DOCTYPE html>
+<!-- 
+                                 ,---.
+                                /    |
+                               /     |
+                              /      |
+                             /       |
+                        ___,'        |
+                      <  -'          :
+                       `-.__..--'``-,_\_
+                          |o/ <o>` :,.)_`>
+                          :/ `     ||/)
+                          (_.).__,-` |\
+                          /( `.``   `| :
+                          \'`-.)  `  ; ;
+                          | `       /-<
+                          |     `  /   `.
+          ,-_-..____     /|  `    :__..-'\
+         /,'-.__\\  ``-./ :`      ;       \
+         `\ `\  `\\  \ :  (   `  /  ,   `. \
+           \` \   \\   |  | `   :  :     .\ \
+            \ `\_  ))  :  ;     |  |      ): :
+           (`-.-'\ ||  |\ \   ` ;  ;       | |
+            \-_   `;;._   ( `  /  /_       | |
+             `-.-.// ,'`-._\__/_,'         ; |
+                \:: :     /     `     ,   /  |
+                 || |    (        ,' /   /   |
+                 ||                ,'   / SSt|
+
+███╗░░░███╗██████╗░░░░░██╗░░░░░░░██╗███████╗██████╗░██████╗░
+████╗░████║██╔══██╗░░░░██║░░██╗░░██║╚════██║██╔══██╗██╔══██╗
+██╔████╔██║██████╔╝░░░░╚██╗████╗██╔╝░░███╔═╝██████╔╝██║░░██║
+██║╚██╔╝██║██╔══██╗░░░░░████╔═████║░██╔══╝░░██╔══██╗██║░░██║
+██║░╚═╝░██║██║░░██║██╗░░╚██╔╝░╚██╔╝░███████╗██║░░██║██████╔╝
+╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░░╚═╝░░╚══════╝╚═╝░░╚═╝╚═════╝░
+
+ -->
+
 <html>
   <head>
     <style>
@@ -170,7 +207,7 @@
         ctx.putImageData(glitchedData, 0, 0)
       }
 
-      const handleKeyPress = (event) => {
+      const handleKeyPress = async (event) => {
         if (event.code === "Space" && activateGlitchMode) {
           createGlitchImage(applyAllGlitchEffects)
         }
@@ -186,6 +223,37 @@
         ) {
           counter = 0
           ctx.drawImage(sourceImage, 0, 0)
+        }
+
+        if (event.altKey && event.code === "KeyS" && activateGlitchMode) {
+          const glitchedImageData = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          )
+
+          const dataUrl = canvas.toDataURL("image/webp")
+          const base64Image = dataUrl.split(",")[1]
+
+          try {
+            const uploadedHash = await (
+              await fetch(
+                "http://localhost:8888/.netlify/functions/uploadToIPF",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ image: base64Image }),
+                }
+              )
+            ).json()
+
+            console.log(uploadedHash)
+          } catch (err) {
+            console.log("Whoops something broke")
+          }
         }
 
         if (
@@ -226,6 +294,21 @@
       const reset = () => {
         counter = 0
         ctx.drawImage(sourceImage, 0, 0)
+      }
+
+      async function imageDataToBlob(imageData) {
+        const tempCanvas = document.createElement("canvas")
+        tempCanvas.width = imageData.width
+        tempCanvas.height = imageData.height
+
+        const tempCtx = tempCanvas.getContext("2d")
+        tempCtx.putImageData(imageData, 0, 0)
+
+        return new Promise((resolve) => {
+          tempCanvas.toBlob((blob) => {
+            resolve(blob)
+          }, "image/png")
+        })
       }
 
       document.addEventListener("keydown", handleKeyPress)
