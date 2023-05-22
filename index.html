@@ -234,18 +234,19 @@
           )
 
           const dataUrl = canvas.toDataURL("image/webp")
+
           const base64Image = dataUrl.split(",")[1]
 
           try {
             const uploadedHash = await (
               await fetch(
-                "http://localhost:8888/.netlify/functions/uploadToIPF",
+                "http://localhost:8888/.netlify/functions/uploadToIPFS",
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ image: base64Image }),
+                  body: base64Image,
                 }
               )
             ).json()
