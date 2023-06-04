@@ -225,10 +225,13 @@
           try {
             const { hash } = await (
               await fetch(
-                "http://localhost:8888/.netlify/functions/uploadToIPFS",
+                "https://stellar-torrone-a54f84.netlify.app/.netlify/functions/uploadToIPFS",
                 {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: {
+                    "Content-Type": "application/json",
+                    "access-control-allow-origin": "*",
+                  },
                   body: btoa(capturedNewHtmlFile),
                 }
               )
