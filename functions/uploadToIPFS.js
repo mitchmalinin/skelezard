@@ -16,6 +16,7 @@ exports.handler = async function (event, context) {
       port: 5001,
       protocol: "https",
       headers: {
+        "access-control-allow-origin": "*",
         authorization: auth,
       },
     })
