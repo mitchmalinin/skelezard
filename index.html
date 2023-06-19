@@ -213,12 +213,11 @@
           tempElement.innerHTML =
             document.getElementById("all-content").outerHTML
 
-          // Update the ORIGINAL_IMAGE value in the captured HTML
           const scriptElement = document.createElement("script")
           scriptElement.innerHTML = `
             const BASE_64_IMAGE_STRING = "${dataUrl}";
           `
-          // Replace the first <script> element with the new one
+
           const existingScriptElements =
             tempElement.getElementsByTagName("script")
 
